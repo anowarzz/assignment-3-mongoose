@@ -1,18 +1,42 @@
 import { Request, Response } from "express";
+import { Book } from "../Book/book.model";
 import { Borrow } from "./borrow.model";
 
 // create a borrow  in database
 const createBorrow = async (req: Request, res: Response) => {
   try {
     const borrowData = req.body;
+
+    const { book, quantity } = borrowData;
+
+    const bookToBorrow = await Book.findById(book);
+
+    if (!bookToBorrow) {
+      res.status(404).json({
+        success: false,
+        message: "Book not found with the provided id",
+      });
+      return;
+    }
+
+    if ((bookToBorrow.copies as number) < quantity) {
+      res.status(400).json({
+        success: false,
+        message: `Cannot borrow ${quantity} pcs. Only ${bookToBorrow?.copies} pcs available`,
+      });
+      return;
+    }
+
     const borrowedBook = await Borrow.create(borrowData);
+
+    await Book.findByIdAndUpdate(book, { $inc: { copies: -quantity } });
 
     res.status(201).json({
       success: true,
       message: "Book Borrowed successfully",
       data: borrowedBook,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({
       message: "Validation failed",
       success: false,
