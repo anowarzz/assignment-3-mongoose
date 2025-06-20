@@ -1,9 +1,7 @@
 import { Request, Response } from "express";
 import { Book } from "./book.model";
 
-
-
-// creating a book in the db
+// Create a book in the db
 const createBook = async (req: Request, res: Response) => {
   try {
     const bookData = req.body;
@@ -24,8 +22,26 @@ const createBook = async (req: Request, res: Response) => {
 };
 
 
+// Get all books from db
+const getAllBooks = async (req: Request, res: Response) => {
+  try {
+    const allBooks = await Book.find();
 
+    res.status(200).json({
+      success: true,
+      message: "Books retrieved successfully",
+      data: allBooks,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "Failed to get all books",
+      success: false,
+      error: error,
+    });
+  }
+};
 
 export const bookController = {
-    createBook
-}
+  createBook,
+  getAllBooks
+};
