@@ -1,12 +1,15 @@
 import cors from "cors";
 import express, { Application, Request, Response } from "express";
-import { Book } from "./app/modules/Book/book.model";
+import bookRoutes from "./app/modules/Book/book.routes";
 
 const app: Application = express();
 
+// middlewares
 app.use(express.json());
 app.use(cors());
 
+// using routes
+app.use("/api/books", bookRoutes);
 
 // server status check
 app.get("/", (req: Request, res: Response) => {

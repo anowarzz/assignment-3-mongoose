@@ -22,6 +22,5 @@ const bookSchema = new Schema<IBook>({
   available: { type: Boolean, default: true },
 });
 
-// Book Model
 
 export const Book = model<IBook>("Book", bookSchema);
