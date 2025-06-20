@@ -5,6 +5,7 @@ const borrowRoutes = Router();
 
 
 borrowRoutes.post("/", borrowControllers.createBorrow)
+borrowRoutes.get("/", borrowControllers.getBorrowSummary)
 
 
 
