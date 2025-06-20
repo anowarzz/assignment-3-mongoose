@@ -21,7 +21,6 @@ const createBook = async (req: Request, res: Response) => {
   }
 };
 
-
 // Get all books from db
 const getAllBooks = async (req: Request, res: Response) => {
   try {
@@ -41,7 +40,29 @@ const getAllBooks = async (req: Request, res: Response) => {
   }
 };
 
+// get single book by id
+const getBookByID = async (req: Request, res: Response) => {
+  try {
+    const bookId = req.params.bookId;
+
+    const book = await Book.findById(bookId);
+
+    res.status(200).json({
+      success: true,
+      message: "Book retrieved successfully",
+      data: book,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "Failed to get book",
+      success: false,
+      error: error,
+    });
+  }
+};
+
 export const bookController = {
   createBook,
-  getAllBooks
+  getAllBooks,
+  getBookByID
 };
