@@ -4,15 +4,15 @@ import { BorrowStaticMethods, IBorrow } from "./borrow.interface";
 
 const borrowSchema = new Schema<IBorrow, BorrowStaticMethods>(
   {
-    book: { type: Schema.Types.ObjectId, ref: "Book", required: true },
+    book: { type: Schema.Types.ObjectId, ref: "Book", required: [true, "Book ID is required"] },
     quantity: {
       type: Number,
-      required: true,
+      required: [true, "Quantity is required"],
       min: [1, "You have to borrow at least 1 copy"],
     },
     dueDate: {
       type: Date,
-      required: true,
+      required: [true, "Due date is required"],
       validate: {
         validator: function (value: Date) {
           return value > new Date();
