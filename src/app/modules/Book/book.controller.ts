@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Book } from "./book.model";
 
 // Create a book in the db
-const createBook = async (req: Request, res: Response) => {
+const createBook = async (req: Request, res: Response): Promise<void> => {
   try {
     const bookData = req.body;
     const createdBook = await Book.create(bookData);
@@ -22,9 +22,40 @@ const createBook = async (req: Request, res: Response) => {
 };
 
 // Get all books from db
-const getAllBooks = async (req: Request, res: Response) => {
+const getAllBooks = async (req: Request, res: Response): Promise<void> => {
   try {
-    const allBooks = await Book.find();
+    const {
+      filter,
+      sortBy = "createdAt",
+      sort = "asc",
+      limit = "10",
+    } = req.query;
+
+    const query: Record<string, any> = {};
+
+    // filter
+    if (filter) {
+      query.genre = filter;
+    }
+
+    // sorting
+    const sortOrder = sort === "asc" ? 1 : -1;
+
+    // limit
+    const bookLimit = parseInt(limit as string, 10) || 10;
+
+    const allBooks = await Book.find(query)
+      .sort({ [sortBy as string]: sortOrder })
+      .limit(bookLimit);
+
+    if (!allBooks || allBooks.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "No books found",
+        data: null,
+      });
+      return;
+    }
 
     res.status(200).json({
       success: true,
@@ -41,7 +72,7 @@ const getAllBooks = async (req: Request, res: Response) => {
 };
 
 // get single book by id
-const getBookByID = async (req: Request, res: Response) => {
+const getBookByID = async (req: Request, res: Response): Promise<void> => {
   try {
     const bookId = req.params.bookId;
 
@@ -62,7 +93,7 @@ const getBookByID = async (req: Request, res: Response) => {
 };
 
 // update a book by id
-const updateBook = async (req: Request, res: Response) => {
+const updateBook = async (req: Request, res: Response): Promise<void> => {
   try {
     const bookId = req.params.bookId;
     const updateBookData = req.body;
@@ -87,7 +118,7 @@ const updateBook = async (req: Request, res: Response) => {
 };
 
 // Delete a book by id
-const deleteBook = async (req: Request, res: Response) => {
+const deleteBook = async (req: Request, res: Response): Promise<void> => {
   try {
     const bookId = req.params.bookId;
 

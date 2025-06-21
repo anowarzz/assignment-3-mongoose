@@ -3,7 +3,7 @@ import { Book } from "../Book/book.model";
 import { Borrow } from "./borrow.model";
 
 // create a borrow  in database
-const createBorrow = async (req: Request, res: Response) => {
+const createBorrow = async (req: Request, res: Response): Promise<void> => {
   try {
     const { book, quantity } = req.body;
     // finding book with book id
@@ -31,10 +31,11 @@ const createBorrow = async (req: Request, res: Response) => {
     });
 
     if (!updatedCopiesBook) {
-      return res.status(500).json({
+      res.status(500).json({
         success: false,
         message: "Failed to update book stock.",
       });
+      return;
     }
 
     // Check and update book availability if needed
@@ -61,7 +62,7 @@ const createBorrow = async (req: Request, res: Response) => {
 };
 
 // Get borrow book summary
-const getBorrowSummary = async (req: Request, res: Response) => {
+const getBorrowSummary = async (req: Request, res: Response): Promise<void> => {
   try {
     const borrowSummary = await Borrow.aggregate([
       {

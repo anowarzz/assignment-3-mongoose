@@ -2,7 +2,7 @@
   "name": "assignment-3-mongoose",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
