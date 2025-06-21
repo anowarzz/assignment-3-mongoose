@@ -6,12 +6,13 @@ const createBorrow = async (req: Request, res: Response): Promise<void> => {
   try {
     const borrowBookData = req.body;
 
-    // Check and update book availability if needed
-    await Borrow.updateBookAvailability(borrowBookData.book);
-
+    
     // borrow book
     const borrowedBook = await Borrow.create(borrowBookData);
-
+    
+    // Check and update book availability if needed
+    await Borrow.updateBookAvailability(borrowBookData.book);
+    
     res.status(201).json({
       success: true,
       message: "Book Borrowed successfully",
