@@ -1,52 +1,17 @@
 import { Request, Response } from "express";
-import { Book } from "../Book/book.model";
 import { Borrow } from "./borrow.model";
 
-// create a borrow  in database
+// create a borrow in database
 const createBorrow = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { book, quantity } = req.body;
-    // finding book with book id
-    const bookToBorrow = await Book.findById(book);
-
-    if (!bookToBorrow) {
-      res.status(404).json({
-        success: false,
-        message: "Book not found with the provided id",
-      });
-      return;
-    }
-    // book availablity check
-    if ((bookToBorrow.copies as number) < quantity) {
-      res.status(400).json({
-        success: false,
-        message: `Cannot borrow ${quantity} pcs. Only ${bookToBorrow?.copies} pcs available`,
-      });
-      return;
-    }
-
-    // updating copies count
-    const updatedCopiesBook = await Book.findByIdAndUpdate(book, {
-      $inc: { copies: -quantity },
-    });
-
-    if (!updatedCopiesBook) {
-      res.status(500).json({
-        success: false,
-        message: "Failed to update book stock.",
-      });
-      return;
-    }
+    const borrowBookData = req.body;
 
     // Check and update book availability if needed
-    const availabilityUpdated = await Borrow.updateBookAvailability(book);
+    await Borrow.updateBookAvailability(borrowBookData.book);
 
-    if (!availabilityUpdated) {
-      console.log("Failed to update book availability status");
-    }
+    // borrow book
+    const borrowedBook = await Borrow.create(borrowBookData);
 
-    // borrow creation
-    const borrowedBook = await Borrow.create(req.body);
     res.status(201).json({
       success: true,
       message: "Book Borrowed successfully",
@@ -54,7 +19,7 @@ const createBorrow = async (req: Request, res: Response): Promise<void> => {
     });
   } catch (error: any) {
     res.status(400).json({
-      message: "Validation failed",
+      message: error.message || "Validation failed",
       success: false,
       error: error,
     });

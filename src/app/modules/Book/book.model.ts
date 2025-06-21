@@ -20,7 +20,7 @@ const bookSchema = new Schema<IBook>(
       message: `Genre must be one of the following: FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, FANTASY , got {VALUE}`,
     },
     isbn: { type: String, required: [true, "ISBN is required"], unique: [true, "ISBN must be unique"] },
-    description: { type: String },
+    description: { type: String, trim: true },
     copies: { type: Number, min: [0, "Copies must be a positive number"] },
     available: { type: Boolean, default: true },
   },
