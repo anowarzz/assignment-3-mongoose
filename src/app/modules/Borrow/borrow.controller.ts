@@ -5,10 +5,8 @@ import { Borrow } from "./borrow.model";
 // create a borrow  in database
 const createBorrow = async (req: Request, res: Response) => {
   try {
-    const borrowData = req.body;
-
-    const { book, quantity } = borrowData;
-
+    const { book, quantity } = req.body;
+    // finding book with book id
     const bookToBorrow = await Book.findById(book);
 
     if (!bookToBorrow) {
@@ -18,7 +16,7 @@ const createBorrow = async (req: Request, res: Response) => {
       });
       return;
     }
-
+    // book availablity check
     if ((bookToBorrow.copies as number) < quantity) {
       res.status(400).json({
         success: false,
@@ -27,10 +25,27 @@ const createBorrow = async (req: Request, res: Response) => {
       return;
     }
 
-    const borrowedBook = await Borrow.create(borrowData);
+    // updating copies count
+    const updatedCopiesBook = await Book.findByIdAndUpdate(book, {
+      $inc: { copies: -quantity },
+    });
 
-    await Book.findByIdAndUpdate(book, { $inc: { copies: -quantity } });
+    if (!updatedCopiesBook) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to update book stock.",
+      });
+    }
 
+    // Check and update book availability if needed
+    const availabilityUpdated = await Borrow.updateBookAvailability(book);
+
+    if (!availabilityUpdated) {
+      console.log("Failed to update book availability status");
+    }
+
+    // borrow creation
+    const borrowedBook = await Borrow.create(req.body);
     res.status(201).json({
       success: true,
       message: "Book Borrowed successfully",
