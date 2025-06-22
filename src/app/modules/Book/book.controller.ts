@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { checkBookExists } from "../../utils/book.utils";
 import { Book } from "./book.model";
 
 // Create a book in the db
@@ -98,6 +99,17 @@ const updateBook = async (req: Request, res: Response): Promise<void> => {
     const bookId = req.params.bookId;
     const updateBookData = req.body;
 
+    // Check if book exists
+    const bookExists = await checkBookExists(bookId);
+    if (!bookExists) {
+      res.status(404).json({
+        success: false,
+        message: "Book not found",
+        data: null,
+      });
+      return;
+    }
+
     const updatedBook = await Book.findByIdAndUpdate(bookId, updateBookData, {
       new: true,
       runValidators: true,
@@ -117,12 +129,25 @@ const updateBook = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+
+
 // Delete a book by id
 const deleteBook = async (req: Request, res: Response): Promise<void> => {
   try {
     const bookId = req.params.bookId;
 
-    const deletedBook = await Book.findByIdAndDelete(bookId);
+    // Check if book exists
+    const bookExists = await checkBookExists(bookId);
+    if (!bookExists) {
+      res.status(404).json({
+        success: false,
+        message: "Book not found with this ID",
+        data: null,
+      });
+      return;
+    }
+
+     await Book.findByIdAndDelete(bookId);
 
     res.status(200).json({
       success: true,
@@ -137,6 +162,8 @@ const deleteBook = async (req: Request, res: Response): Promise<void> => {
     });
   }
 };
+
+
 
 export const bookController = {
   createBook,
