@@ -60,9 +60,8 @@ const globalErrorHandler = (
         message: error.message || "An error occurred",
       },
     });
-    return
+    return;
   }
-
 };
 
 export default globalErrorHandler;
