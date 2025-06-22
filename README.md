@@ -1,4 +1,4 @@
-# 📃 LIBRARY MANAGEMENT WITH MONGOOSE AND TYPESCRIPT
+# 📃 LIBRARY MANAGEMENT WITH MONGOOSE
 
 This is a TypeScript Express Application with Mongoose for MongoDB CRUD operations. It includes Book-related endpoints such as adding a book, retrieving a single book, getting all books, updating a book, deleting a book.
 And also borrowing a book related endpoints such as adding a borrow record and getting the summary of all books borrow record.
@@ -71,6 +71,20 @@ npm run dev
 /api/books/
 ```
 
+**Example Request Body:**
+
+```json
+{
+  "title": "The Great Gatsby",
+  "author": "F. Scott Fitzgerald",
+  "genre": "FICTION",
+  "isbn": "9780743273565",
+  "description": "A classic novel about the American Dream",
+  "copies": 5,
+  "available": true
+}
+```
+
 **GET : Get all books**
 
 ```code
@@ -89,6 +103,15 @@ npm run dev
 /api/books/:bookId
 ```
 
+**Example Request Body:**
+
+```json
+{
+  "copies": 10,
+  "available": true
+}
+```
+
 **DELETE : Delete a book**
 
 ```code
@@ -99,6 +122,16 @@ npm run dev
 
 ```code
 /api/borrow
+```
+
+**Example Request Body:**
+
+```json
+{
+  "book": "60d21b4667d0d8992e610c85",
+  "quantity": 1,
+  "dueDate": "2025-07-22T00:00:00.000Z"
+}
 ```
 
 **GET : Get the summary of all books borrow records**
@@ -114,4 +147,4 @@ npm run dev
 - **Language**: TypeScript
 - **Deployment**: Vercel
 
-## Happy Developing! 📚
+## Happy Developing! 
