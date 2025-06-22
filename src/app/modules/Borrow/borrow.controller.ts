@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { Types } from "mongoose";
 import { Borrow } from "./borrow.model";
 
 // create a borrow in database
@@ -9,6 +10,11 @@ const createBorrow = async (
 ): Promise<void> => {
   try {
     const borrowBookData = req.body;
+
+    // check if the id is valid object id
+    if (!Types.ObjectId.isValid(borrowBookData.book)) {
+      throw new Error("Invalid book ID");
+    }
 
     // borrow book
     const borrowedBook = await Borrow.create(borrowBookData);
