@@ -62,9 +62,9 @@ const getBorrowSummary = async (req: Request, res: Response): Promise<void> => {
       message: "Borrowed books summary retrieved successfully",
       data: borrowSummary,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({
-      message: "Book Summary Retrieval Failed",
+      message: error.message || "Book Summary Retrieval Failed",
       success: false,
       error: error,
     });

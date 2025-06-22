@@ -13,14 +13,17 @@ const createBook = async (req: Request, res: Response): Promise<void> => {
       message: "Book created successfully",
       data: createdBook,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({
-      message: "Validation failed",
+      message: error.message || "Failed to create book",
       success: false,
       error: error,
     });
   }
 };
+
+
+
 
 // Get all books from db
 const getAllBooks = async (req: Request, res: Response): Promise<void> => {
@@ -63,9 +66,9 @@ const getAllBooks = async (req: Request, res: Response): Promise<void> => {
       message: "Books retrieved successfully",
       data: allBooks,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({
-      message: "Failed to get all books",
+      message: error.message || "Failed to get all books",
       success: false,
       error: error,
     });
@@ -77,6 +80,17 @@ const getBookByID = async (req: Request, res: Response): Promise<void> => {
   try {
     const bookId = req.params.bookId;
 
+    // Check if book exists
+    const bookExists = await checkBookExists(bookId);
+    if (!bookExists) {
+      res.status(404).json({
+        success: false,
+        message: "No book found with this ID",
+        data: null,
+      });
+      return;
+    }
+
     const book = await Book.findById(bookId);
 
     res.status(200).json({
@@ -84,9 +98,9 @@ const getBookByID = async (req: Request, res: Response): Promise<void> => {
       message: "Book retrieved successfully",
       data: book,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({
-      message: "Failed to get book",
+      message: error.message || "Failed to get book",
       success: false,
       error: error,
     });
@@ -120,16 +134,14 @@ const updateBook = async (req: Request, res: Response): Promise<void> => {
       message: "Book updated successfully",
       data: updatedBook,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({
-      message: "Failed to update the book",
+      message: error.message || "Failed to update the book",
       success: false,
       error: error,
     });
   }
 };
-
-
 
 // Delete a book by id
 const deleteBook = async (req: Request, res: Response): Promise<void> => {
@@ -147,23 +159,21 @@ const deleteBook = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-     await Book.findByIdAndDelete(bookId);
+    await Book.findByIdAndDelete(bookId);
 
     res.status(200).json({
       success: true,
       message: "Book deleted successfully",
       data: null,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({
-      message: "Failed to delete the book",
+      message: error.message || "Failed to delete the book",
       success: false,
       error: error,
     });
   }
 };
-
-
 
 export const bookController = {
   createBook,
