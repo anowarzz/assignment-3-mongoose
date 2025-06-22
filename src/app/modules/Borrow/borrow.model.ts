@@ -45,7 +45,7 @@ borrowSchema.pre("save", async function (next) {
   try {
     const book = await Book.findById(this.book);
     if (!book) {
-      throw new Error("Book not found");
+      throw new Error("Book not found with this ID");
     }
 
     if (book.copies < this.quantity) {

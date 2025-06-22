@@ -24,7 +24,11 @@ const createBook = async (
 };
 
 // Get all books from db
-const getAllBooks = async (req: Request, res: Response): Promise<void> => {
+const getAllBooks = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const {
       filter,
@@ -65,16 +69,19 @@ const getAllBooks = async (req: Request, res: Response): Promise<void> => {
       data: allBooks,
     });
   } catch (error: any) {
-    res.status(400).json({
-      message: error.message || "Failed to get all books",
-      success: false,
-      error: error,
-    });
+    error.customMessage = "Failed to retrieve all books";
+    next(error);
   }
 };
 
+
+
 // get single book by id
-const getBookByID = async (req: Request, res: Response): Promise<void> => {
+const getBookByID = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const bookId = req.params.bookId;
 
@@ -97,16 +104,18 @@ const getBookByID = async (req: Request, res: Response): Promise<void> => {
       data: book,
     });
   } catch (error: any) {
-    res.status(400).json({
-      message: error.message || "Failed to get book",
-      success: false,
-      error: error,
-    });
+    error.customMessage = "Failed to retrieve book";
+    next(error);
   }
 };
 
+
 // update a book by id
-const updateBook = async (req: Request, res: Response): Promise<void> => {
+const updateBook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const bookId = req.params.bookId;
     const updateBookData = req.body;
@@ -133,16 +142,17 @@ const updateBook = async (req: Request, res: Response): Promise<void> => {
       data: updatedBook,
     });
   } catch (error: any) {
-    res.status(400).json({
-      message: error.message || "Failed to update the book",
-      success: false,
-      error: error,
-    });
+    error.customMessage = "Failed to update book";
+    next(error);
   }
 };
 
 // Delete a book by id
-const deleteBook = async (req: Request, res: Response): Promise<void> => {
+const deleteBook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const bookId = req.params.bookId;
 
@@ -165,11 +175,8 @@ const deleteBook = async (req: Request, res: Response): Promise<void> => {
       data: null,
     });
   } catch (error: any) {
-    res.status(400).json({
-      message: error.message || "Failed to delete the book",
-      success: false,
-      error: error,
-    });
+    error.customMessage = "Failed to delete book";
+    next(error);
   }
 };
 

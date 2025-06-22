@@ -1,34 +1,38 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Borrow } from "./borrow.model";
 
 // create a borrow in database
-const createBorrow = async (req: Request, res: Response): Promise<void> => {
+const createBorrow = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const borrowBookData = req.body;
 
-    
     // borrow book
     const borrowedBook = await Borrow.create(borrowBookData);
-    
+
     // Check and update book availability if needed
     await Borrow.updateBookAvailability(borrowBookData.book);
-    
+
     res.status(201).json({
       success: true,
       message: "Book Borrowed successfully",
       data: borrowedBook,
     });
   } catch (error: any) {
-    res.status(400).json({
-      message: error.message || "Validation failed",
-      success: false,
-      error: error,
-    });
+    error.customMessage = "Failed to create borrow record";
+    next(error);
   }
 };
 
 // Get borrow book summary
-const getBorrowSummary = async (req: Request, res: Response): Promise<void> => {
+const getBorrowSummary = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const borrowSummary = await Borrow.aggregate([
       {
@@ -63,11 +67,8 @@ const getBorrowSummary = async (req: Request, res: Response): Promise<void> => {
       data: borrowSummary,
     });
   } catch (error: any) {
-    res.status(400).json({
-      message: error.message || "Book Summary Retrieval Failed",
-      success: false,
-      error: error,
-    });
+    error.customMessage = "Failed to retrieve borrow summary";
+    next(error);
   }
 };
 
