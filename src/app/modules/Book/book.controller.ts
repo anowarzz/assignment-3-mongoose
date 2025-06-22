@@ -18,7 +18,9 @@ const createBook = async (req: Request, res: Response): Promise<void> => {
       message: error.message || "Failed to create book",
       success: false,
       error: error,
+      
     });
+    console.log(error);
   }
 };
 
