@@ -1,9 +1,13 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { checkBookExists } from "../../utils/book.utils";
 import { Book } from "./book.model";
 
 // Create a book in the db
-const createBook = async (req: Request, res: Response): Promise<void> => {
+const createBook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const bookData = req.body;
     const createdBook = await Book.create(bookData);
@@ -14,18 +18,10 @@ const createBook = async (req: Request, res: Response): Promise<void> => {
       data: createdBook,
     });
   } catch (error: any) {
-    res.status(400).json({
-      message: error.message || "Failed to create book",
-      success: false,
-      error: error,
-      
-    });
-    console.log(error);
+    error.customMessage = "Failed to create book";
+    next(error);
   }
 };
-
-
-
 
 // Get all books from db
 const getAllBooks = async (req: Request, res: Response): Promise<void> => {
