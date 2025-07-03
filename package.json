@@ -1,5 +1,5 @@
 {
-  "name": "assignment-3-mongoose",
+  "name": "bookland-server",
   "version": "1.0.0",
   "description": "",
   "main": "dist/server.js",
