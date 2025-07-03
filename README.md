@@ -22,7 +22,7 @@ And also borrowing a book related endpoints such as adding a borrow record and g
 **1. Clone the repository in your local machine:**
 
 ```bash
-  https://github.com/anowarzz/assignment-3-mongoose.git
+  https://github.com/anowarzz/bookland-server.git
 ```
 
 **2. Navigate to the cloned project folder:**
