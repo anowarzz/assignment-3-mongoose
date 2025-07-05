@@ -1,4 +1,4 @@
-# 📃 BookLand - LIBRARY MANAGEMEN
+# 📃 BookLand - LIBRARY MANAGEMENT
 
 This is a TypeScript Express Application with Mongoose for MongoDB CRUD operations. It includes Book-related endpoints such as adding a book, retrieving a single book, getting all books, updating a book, deleting a book.
 And also borrowing a book related endpoints such as adding a borrow record and getting the summary of all books borrow record.
@@ -28,7 +28,7 @@ And also borrowing a book related endpoints such as adding a borrow record and g
 **2. Navigate to the cloned project folder:**
 
 ```bash
-cd assignment-3-mongoose
+cd bookland-server
 ```
 
 **3. Install dependencies:**
