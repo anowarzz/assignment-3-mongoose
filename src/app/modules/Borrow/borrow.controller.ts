@@ -9,18 +9,23 @@ const createBorrow = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    const bookId = req.params.bookId;
     const borrowBookData = req.body;
 
     // check if the id is valid object id
-    if (!Types.ObjectId.isValid(borrowBookData.book)) {
+    if (!Types.ObjectId.isValid(bookId)) {
       throw new Error("Invalid book ID");
     }
 
     // borrow book
-    const borrowedBook = await Borrow.create(borrowBookData);
+    const borrowedBook = await Borrow.create({
+      book: new Types.ObjectId(bookId),
+      quantity: borrowBookData.quantity,
+      dueDate: borrowBookData.dueDate,
+    });
 
     // Check and update book availability if needed
-    await Borrow.updateBookAvailability(borrowBookData.book);
+    await Borrow.updateBookAvailability(new Types.ObjectId(bookId));
 
     res.status(201).json({
       success: true,

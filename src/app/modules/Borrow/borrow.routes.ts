@@ -4,7 +4,7 @@ import { borrowControllers } from "./borrow.controller";
 const borrowRoutes = Router();
 
 
-borrowRoutes.post("/", borrowControllers.createBorrow)
+borrowRoutes.post("/:bookId", borrowControllers.createBorrow)
 borrowRoutes.get("/", borrowControllers.getBorrowSummary)
 
 

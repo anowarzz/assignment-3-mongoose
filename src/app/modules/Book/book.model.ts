@@ -38,4 +38,20 @@ bookSchema.pre("save", function (next) {
   next();
 });
 
+// set availability false if copies = 0 on update
+bookSchema.pre("findOneAndUpdate", function (next) {
+  const update = this.getUpdate() as Record<string, any> | null;
+  if (update) {
+    if (update.copies === 0) {
+      update.available = false;
+    } else {
+      update.available = true;
+    }
+  }
+  next();
+});
+
+
+
+
 export const Book = model<IBook>("Book", bookSchema);

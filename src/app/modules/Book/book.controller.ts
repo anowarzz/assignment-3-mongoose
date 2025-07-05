@@ -74,8 +74,6 @@ const getAllBooks = async (
   }
 };
 
-
-
 // get single book by id
 const getBookByID = async (
   req: Request,
@@ -109,7 +107,6 @@ const getBookByID = async (
   }
 };
 
-
 // update a book by id
 const updateBook = async (
   req: Request,
@@ -131,10 +128,14 @@ const updateBook = async (
       return;
     }
 
-    const updatedBook = await Book.findByIdAndUpdate(bookId, updateBookData, {
-      new: true,
-      runValidators: true,
-    });
+    const updatedBook = await Book.findOneAndUpdate(
+      { _id: bookId },
+      updateBookData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     res.status(200).json({
       success: true,
