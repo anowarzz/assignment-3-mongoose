@@ -33,8 +33,8 @@ const getAllBooks = async (
     const {
       filter,
       sortBy = "createdAt",
-      sort = "asc",
-      limit = "10",
+      sort = "desc",
+      limit = "",
     } = req.query;
 
     const query: Record<string, any> = {};
@@ -48,7 +48,7 @@ const getAllBooks = async (
     const sortOrder = sort === "asc" ? 1 : -1;
 
     // limit
-    const bookLimit = parseInt(limit as string, 10) || 10;
+    const bookLimit = limit ? parseInt(limit as string, 10) : 0;
 
     const allBooks = await Book.find(query)
       .sort({ [sortBy as string]: sortOrder })
