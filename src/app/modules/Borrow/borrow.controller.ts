@@ -47,7 +47,11 @@ const getBorrowSummary = async (
   try {
     const borrowSummary = await Borrow.aggregate([
       {
-        $group: { _id: "$book", totalQuantity: { $sum: "$quantity" } },
+        $group: {
+          _id: "$book",
+          totalQuantity: { $sum: "$quantity" },
+          latestBorrowDate: { $max: "$createdAt" },
+        },
       },
       {
         $lookup: {
@@ -59,6 +63,9 @@ const getBorrowSummary = async (
       },
       {
         $unwind: "$book",
+      },
+      {
+        $sort: { latestBorrowDate: -1 },
       },
       {
         $project: {
